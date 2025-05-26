@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>山思数字管理平台V0.1</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1d4ed8',
+                        secondary: '#64748b'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '2px',
+                        DEFAULT: '4px',
+                        'md': '8px',
+                        'lg': '12px',
+                        'xl': '16px',
+                        '2xl': '20px',
+                        '3xl': '24px',
+                        'full': '9999px',
+                        'button': '4px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            min-height: 1024px;
+            overflow: hidden;
+        }
+
+        .tool-button {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s;
+        }
+
+        .tool-button:hover {
+            background: #1d4ed8;
+            color: white;
+        }
+
+        .monitor-window {
+            background: #1e293b;
+            height: 160px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .fullscreen-btn {
+            position: absolute;
+            right: 8px;
+            bottom: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        .animate-scroll {
+            animation: scroll 15s linear infinite;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <div class="w-full h-full bg-white">
+        <header class="h-14 bg-white border-b flex items-center px-4 justify-between">
+            <div class="font-['Pacifico'] text-xl text-primary">logo</div>
+            <div class="flex items-center gap-4 absolute left-1/2 -translate-x-1/2">
+                <div class="font-['Pacifico'] text-xl text-primary">logo</div>
+                <h1 class="text-lg font-medium">山思数字管理平台V0.1</h1>
+            </div>
+            <div class="overflow-hidden w-80">
+                <div class="animate-scroll flex items-center gap-6 text-sm whitespace-nowrap">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-temperature-high text-red-500"></i>
+                        <span>温度: 26℃</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-droplet text-blue-500"></i>
+                        <span>湿度: 65%</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-cloud-rain text-gray-500"></i>
+                        <span>降水: 0mm</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-wind text-gray-500"></i>
+                        <span>风速: 3m/s</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main class="flex h-[calc(100vh-56px)] overflow-hidden">
+            <div class="w-14 bg-gray-800 flex flex-col gap-2 p-2">
+                <button class="tool-button !rounded-button group relative">
+                    <i class="fas fa-edit"></i>
+                    <span
+                        class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 whitespace-nowrap">编辑</span>
+                </button>
+                <button class="tool-button !rounded-button group relative">
+                    <i class="fas fa-layer-group"></i>
+                    <span
+                        class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 whitespace-nowrap">图层管理</span>
+                </button>
+                <button class="tool-button !rounded-button group relative">
+                    <i class="fas fa-chart-line"></i>
+                    <span
+                        class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 whitespace-nowrap">统计</span>
+                </button>
+                <button class="tool-button !rounded-button group relative">
+                    <i class="fas fa-helicopter"></i>
+                    <span
+                        class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 whitespace-nowrap">无人机控制</span>
+                </button>
+                <button class="tool-button !rounded-button group relative">
+                    <i class="fas fa-robot"></i>
+                    <span
+                        class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 whitespace-nowrap">AI模块</span>
+                </button>
+            </div>
+            <div class="flex-1 relative" id="cesiumContainer">
+                <div class="absolute left-4 top-4 flex gap-2 z-10">
+                    <button class="tool-button !rounded-button">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button class="tool-button !rounded-button">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button class="tool-button !rounded-button">
+                        <i class="fas fa-location-dot"></i>
+                    </button>
+                </div>
+            </div>
+            <script>
+                Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0OTIyYjA2NS1kOTRlLTQ5YjgtODI0Yi0wNjNmNmQ1MzVlMzgiLCJpZCI6Mjg4MzQxLCJpYXQiOjE3NDQwMzgwNjl9._Wk3WsAUjBsz50AW1CfNYW9tsEbkJYIBLpVxZSFhZa8';
+                const viewer = new Cesium.Viewer('cesiumContainer', {
+                    terrainProvider: Cesium.createWorldTerrain(),
+                    animation: false,
+                    baseLayerPicker: false,
+                    fullscreenButton: false,
+                    vrButton: false,
+                    geocoder: false,
+                    homeButton: false,
+                    infoBox: false,
+                    sceneModePicker: false,
+                    selectionIndicator: false,
+                    timeline: false,
+                    navigationHelpButton: false,
+                });
+                viewer.scene.globe.enableLighting = true;
+            </script>
+            <div class="w-[320px] bg-white border-l p-4 flex flex-col gap-4">
+                <div class="monitor-window flex items-center justify-center text-white">
+                    <span>无人机画面</span>
+                    <button class="fullscreen-btn">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+                <div class="monitor-window flex items-center justify-center text-white">
+                    <span>摄像头画面</span>
+                    <button class="fullscreen-btn">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+                <div class="flex gap-2">
+                    <button class="flex-1 py-2 bg-primary text-white !rounded-button whitespace-nowrap">巡护工作</button>
+                    <button
+                        class="flex-1 py-2 bg-gray-100 text-gray-700 !rounded-button whitespace-nowrap">社区工作</button>
+                    <button
+                        class="flex-1 py-2 bg-gray-100 text-gray-700 !rounded-button whitespace-nowrap">监测数据</button>
+                    <button
+                        class="flex-1 py-2 bg-gray-100 text-gray-700 !rounded-button whitespace-nowrap">入区情况</button>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>
